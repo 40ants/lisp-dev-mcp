@@ -25,3 +25,4 @@
 
 
 (asdf:register-system-packages "log4cl" '("LOG"))
+(asdf:register-system-packages "bordeaux-threads" '("BORDEAUX-THREADS-2"))

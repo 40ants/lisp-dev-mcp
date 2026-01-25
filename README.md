@@ -45,7 +45,7 @@ You can install this library from Quicklisp, but you want to receive updates qui
 
 <a id="x-28-23A-28-2824-29-20BASE-CHAR-20-2E-20-2240ANTS-LISP-DEV-MCP-2FCORE-22-29-20PACKAGE-29"></a>
 
-#### [package](e9e4) `40ants-lisp-dev-mcp/core`
+#### [package](affc) `40ants-lisp-dev-mcp/core`
 
 <a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FINDEX-3A-3A-7C-4040ANTS-LISP-DEV-MCP-2FCORE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -53,7 +53,7 @@ You can install this library from Quicklisp, but you want to receive updates qui
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3ASTART-SERVER-20FUNCTION-29"></a>
 
-##### [function](7cac) `40ants-lisp-dev-mcp/core:start-server` &key port (in-thread nil)
+##### [function](951c) `40ants-lisp-dev-mcp/core:start-server` &key port (in-thread nil)
 
 Starts the `MCP` server.
 
@@ -66,8 +66,8 @@ Returns thread object if `IN-THREAD` is true, otherwise blocks.
 [7ed8]: https://40ants/lisp-dev-mcp/
 [6421]: https://github.com/40ants/lisp-dev-mcp
 [7c1b]: https://github.com/40ants/lisp-dev-mcp/actions
-[e9e4]: https://github.com/40ants/lisp-dev-mcp/blob/87656712557ce23c130fabde8a6d167382b9af9f/src/core.lisp#L1
-[7cac]: https://github.com/40ants/lisp-dev-mcp/blob/87656712557ce23c130fabde8a6d167382b9af9f/src/core.lisp#L106
+[affc]: https://github.com/40ants/lisp-dev-mcp/blob/8ac0199e2757a3fa339fcdbda6801e748feca23a/src/core.lisp#L1
+[951c]: https://github.com/40ants/lisp-dev-mcp/blob/8ac0199e2757a3fa339fcdbda6801e748feca23a/src/core.lisp#L106
 [58fb]: https://github.com/40ants/lisp-dev-mcp/issues
 [422a]: https://quickdocs.org/40ants-logging
 [6700]: https://quickdocs.org/40ants-mcp

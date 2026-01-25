@@ -1,0 +1,9 @@
+.qlot/
+/docs/build/
+*~
+.#*
+*.fasl
+.*.~undo-tree~
+.cursor/
+40ants-mcp
+roswell/40ants-lisp-dev-mcp

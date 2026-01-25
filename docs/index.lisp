@@ -34,8 +34,7 @@
   
   (list :theme
         (find-symbol "40ANTS-THEME"
-                     (find-package "40ANTS-DOC-THEME-40ANTS")))
-  )
+                     (find-package "40ANTS-DOC-THEME-40ANTS"))))
 
 
 (defsection @index (:title "40ants-lisp-dev-mcp - MCP which gives LLM tools for working with running Lisp image."
@@ -47,6 +46,9 @@
                                    "ASDF:PACKAGE-INFERRED-SYSTEM"
                                    "ASDF"
                                    "40A"
+                                   "LLM"
+                                   "MCP"
+                                   "TCP"
                                    "API"
                                    "URL"
                                    "URI"

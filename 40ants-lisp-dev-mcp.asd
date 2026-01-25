@@ -10,6 +10,7 @@
   :defsystem-depends-on ("40ants-asdf-system")
   :pathname "src"
   :depends-on ("defmain"
+               "jsonrpc"
                "40ants-mcp"
                "40ants-logging"
                "40ants-slynk"

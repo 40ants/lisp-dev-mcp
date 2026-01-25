@@ -43,5 +43,4 @@
   
   (40ants-lisp-dev-mcp/core:start-server
    :port (when port
-           (parse-integer port))
-   :debug debug))
+           (parse-integer port))))

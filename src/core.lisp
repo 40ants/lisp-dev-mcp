@@ -14,9 +14,10 @@
                 #:text-content)
   (:import-from #:40ants-mcp/server/errors
                 #:tool-error)
+  (:import-from #:40ants-mcp/server/definition)
   (:import-from #:40ants-mcp/tools
                 #:define-tool)
-  (:import-from #:bordeaux-threads
+  (:import-from #:bordeaux-threads-2
                 #:make-thread)
   (:export #:start-server))
 (in-package #:40ants-lisp-dev-mcp/core)
@@ -102,20 +103,19 @@
                  (make-output-results))))))))))
 
 
-(defun start-server (&key port debug (in-thread nil))
+(defun start-server (&key port (in-thread nil))
   "Starts the MCP server.
 
    PORT: TCP port number (integer or nil for stdio transport).
-   DEBUG: Boolean to enable debugger on errors.
    IN-THREAD: Boolean, if true starts server in a background thread, otherwise blocks (default).
 
    Returns thread object if IN-THREAD is true, otherwise blocks."
-  (let ((server-fn (lambda ()
-                     (40ants-mcp/server/definition:start-server dev-tools
-                                                                :transport (if port
-                                                                             :http
-                                                                             :stdio)
-                                                                :port port))))
+  (flet ((server-fn ()
+           (40ants-mcp/server/definition:start-server dev-tools
+                                                      :transport (if port
+                                                                   :http
+                                                                   :stdio)
+                                                      :port port)))
     (if in-thread
-        (make-thread server-fn :name "MCP Server Thread")
-        (funcall server-fn))))
+      (make-thread #'server-fn :name "MCP Server Thread")
+      (funcall #'server-fn))))

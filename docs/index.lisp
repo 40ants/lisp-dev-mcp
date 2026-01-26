@@ -48,6 +48,8 @@
                                    "40A"
                                    "LLM"
                                    "MCP"
+                                   "SLYNK"
+                                   "IDE"
                                    "TCP"
                                    "API"
                                    "URL"

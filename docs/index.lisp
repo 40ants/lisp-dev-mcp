@@ -86,7 +86,7 @@ ros install 40ants/lisp-dev-mcp
 
 
 (defsection @usage (:title "Usage")
-  "
+  """
 
 # Running in stdio mode
 
@@ -150,7 +150,7 @@ then configure your IDE:
 }
 ```
 
-")
+""")
 
 
 (defautodoc @api (:system "40ants-lisp-dev-mcp"))

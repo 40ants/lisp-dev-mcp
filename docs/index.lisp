@@ -75,14 +75,81 @@ You can install this library from Quicklisp, but you want to receive updates qui
 ```
 (ql-dist:install-dist "http://dist.ultralisp.org/"
                       :prompt nil)
-(ql:quickload :40ants-lisp-dev-mcp)
+```
+
+then:
+
+```
+ros install 40ants/lisp-dev-mcp
 ```
 """)
 
 
 (defsection @usage (:title "Usage")
   "
-TODO: Write a library description. Put some examples here.
+
+# Running in stdio mode
+
+Here is an example config to add lisp-dev-mcp to Qwen:
+
+```
+{
+  "mcpServers": {
+    "lisp-dev": {
+      "command": "lisp-dev-mcp",
+      "args": []
+    }
+  },
+  "$version": 2
+}
+```
+
+If you want to debug MCP server, then you might start it will logging output and a SLYNK port opened:
+
+```
+{
+  "mcpServers": {
+    "lisp-dev": {
+      "command": "lisp-dev-mcp",
+      "args": ["--log", "mcp.log", "--verbose"],
+      "env": {
+        "SLYNK_PORT": "9991"
+      }
+    }
+  },
+  "$version": 2
+}
+```
+
+# Running in HTTP streaming mode
+
+Start the lisp process:
+
+```
+qlot exec roswell/lisp-dev-mcp.ros --port 7890
+```
+
+or in the REPL:
+
+```
+(ql:quickload :40ants-lisp-dev-mcp)
+
+(40ants-lisp-dev-mcp/core:start-server :port 7890)
+```
+
+then configure your IDE:
+
+```
+{
+  "mcpServers": {
+    "lisp-dev": {
+      "url": "http://localhost:7890/mcp"
+    }
+  },
+  "$version": 2
+}
+```
+
 ")
 
 

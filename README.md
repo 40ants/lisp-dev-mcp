@@ -27,14 +27,77 @@ You can install this library from Quicklisp, but you want to receive updates qui
 ```
 (ql-dist:install-dist "http://dist.ultralisp.org/"
                       :prompt nil)
-(ql:quickload :40ants-lisp-dev-mcp)
+```
+then:
+
+```
+ros install 40ants/lisp-dev-mcp
 ```
 <a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FINDEX-3A-3A-40USAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## Usage
 
-`TODO`: Write a library description. Put some examples here.
+<a id="running-in-stdio-mode"></a>
 
+### Running in stdio mode
+
+Here is an example config to add lisp-dev-mcp to Qwen:
+
+```
+{
+  "mcpServers": {
+    "lisp-dev": {
+      "command": "lisp-dev-mcp",
+      "args": []
+    }
+  },
+  "$version": 2
+}
+```
+If you want to debug `MCP` server, then you might start it will logging output and a `SLYNK` port opened:
+
+```
+{
+  "mcpServers": {
+    "lisp-dev": {
+      "command": "lisp-dev-mcp",
+      "args": ["--log", "mcp.log", "--verbose"],
+      "env": {
+        "SLYNK_PORT": "9991"
+      }
+    }
+  },
+  "$version": 2
+}
+```
+<a id="running-in-http-streaming-mode"></a>
+
+### Running in HTTP streaming mode
+
+Start the lisp process:
+
+```
+qlot exec roswell/lisp-dev-mcp.ros --port 7890
+```
+or in the `REPL`:
+
+```
+(ql:quickload :40ants-lisp-dev-mcp)
+
+(40ants-lisp-dev-mcp/core:start-server :port 7890)
+```
+then configure your `IDE`:
+
+```
+{
+  "mcpServers": {
+    "lisp-dev": {
+      "url": "http://localhost:7890/mcp"
+    }
+  },
+  "$version": 2
+}
+```
 <a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FINDEX-3A-3A-40API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## API
@@ -45,7 +108,7 @@ You can install this library from Quicklisp, but you want to receive updates qui
 
 <a id="x-28-23A-28-2824-29-20BASE-CHAR-20-2E-20-2240ANTS-LISP-DEV-MCP-2FCORE-22-29-20PACKAGE-29"></a>
 
-#### [package](8774) `40ants-lisp-dev-mcp/core`
+#### [package](049a) `40ants-lisp-dev-mcp/core`
 
 <a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FINDEX-3A-3A-7C-4040ANTS-LISP-DEV-MCP-2FCORE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -53,7 +116,7 @@ You can install this library from Quicklisp, but you want to receive updates qui
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3ASTART-SERVER-20FUNCTION-29"></a>
 
-##### [function](ef66) `40ants-lisp-dev-mcp/core:start-server` &key port (in-thread nil)
+##### [function](eda2) `40ants-lisp-dev-mcp/core:start-server` &key port (in-thread t)
 
 Starts the `MCP` server.
 
@@ -66,8 +129,8 @@ Returns thread object if `IN-THREAD` is true, otherwise blocks.
 [7ed8]: https://40ants/lisp-dev-mcp/
 [6421]: https://github.com/40ants/lisp-dev-mcp
 [7c1b]: https://github.com/40ants/lisp-dev-mcp/actions
-[8774]: https://github.com/40ants/lisp-dev-mcp/blob/ff00e50bc14b39b099e3e2925b362e83f2a49992/src/core.lisp#L1
-[ef66]: https://github.com/40ants/lisp-dev-mcp/blob/ff00e50bc14b39b099e3e2925b362e83f2a49992/src/core.lisp#L106
+[049a]: https://github.com/40ants/lisp-dev-mcp/blob/67e1087abc3b743a65a6d5df18e7768b6baa2fce/src/core.lisp#L1
+[eda2]: https://github.com/40ants/lisp-dev-mcp/blob/67e1087abc3b743a65a6d5df18e7768b6baa2fce/src/core.lisp#L106
 [58fb]: https://github.com/40ants/lisp-dev-mcp/issues
 [422a]: https://quickdocs.org/40ants-logging
 [6700]: https://quickdocs.org/40ants-mcp

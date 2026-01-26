@@ -103,7 +103,7 @@
                  (make-output-results))))))))))
 
 
-(defun start-server (&key port (in-thread nil))
+(defun start-server (&key port (in-thread t))
   "Starts the MCP server.
 
    PORT: TCP port number (integer or nil for stdio transport).

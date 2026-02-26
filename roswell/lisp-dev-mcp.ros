@@ -7,8 +7,18 @@ exec ros -Q -- $0 "$@"
 (progn
   (ros:ensure-asdf)
   #+quicklisp
-  (ql:quickload (list "40ants-lisp-dev-mcp/main")
-                :silent t))
+  (let* ((dev-null
+           ;; To suppress this message, which brokes
+           ;; some MCP clients when using STDIO transport
+           ;; SLYNK's ASDF loader finished
+           (make-broadcast-stream))
+         (*debug-io* dev-null)
+         (*standard-output* dev-null)
+         ;; Probably this is not a good idea?
+         ;; I don't know, just leave it as is for now
+         (*error-output* dev-null))
+    (ql:quickload (list "40ants-lisp-dev-mcp/main")
+                  :silent t)))
 
 (in-package #:cl-user)
 

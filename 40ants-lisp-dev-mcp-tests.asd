@@ -7,7 +7,8 @@
   :source-control (:git "https://github.com/40ants/lisp-dev-mcp")
   :bug-tracker "https://github.com/40ants/lisp-dev-mcp/issues"
   :pathname "t"
-  :depends-on ("40ants-lisp-dev-mcp-tests/core")
+  :depends-on ("40ants-lisp-dev-mcp-tests/core"
+               "40ants-lisp-dev-mcp-tests/paredit")
   :perform (test-op (op c)
                     (unless (symbol-call :rove :run c)
                       (error "Tests failed"))))

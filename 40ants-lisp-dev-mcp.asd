@@ -21,7 +21,11 @@
                "openrpc-server"
                "jsonrpc/errors"
                "bordeaux-threads"
-               "40ants-lisp-dev-mcp/core")
+               "eclector"
+               "cl-ppcre"
+               "yason"
+               "40ants-lisp-dev-mcp/core"
+               "40ants-lisp-dev-mcp/paredit-tools")
   :in-order-to ((test-op (test-op "40ants-lisp-dev-mcp-tests"))))
 
 

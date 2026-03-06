@@ -19,7 +19,8 @@
                 #:define-tool)
   (:import-from #:bordeaux-threads-2
                 #:make-thread)
-  (:export #:start-server))
+  (:export #:start-server
+           #:dev-tools))
 (in-package #:40ants-lisp-dev-mcp/core)
 
 

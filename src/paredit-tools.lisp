@@ -37,7 +37,7 @@
 (in-package #:40ants-lisp-dev-mcp/paredit-tools)
 
 
-;;; Shared helpers for all paredit tools
+;;; Helpers for all paredit tools
 
 (defun parse-path-string (path-str)
   "Parse a comma-separated path string like \"2,0,1\" into a list of integers."

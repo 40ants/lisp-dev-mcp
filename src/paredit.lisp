@@ -3,6 +3,8 @@
   (:import-from #:cl-ppcre
                 #:scan-to-strings
                 #:regex-replace-all)
+  (:import-from #:yason
+                #:encode)
   (:import-from #:40ants-lisp-dev-mcp/cst
                 #:cst-node
                 #:make-cst-node
@@ -43,7 +45,7 @@
 (in-package #:40ants-lisp-dev-mcp/paredit)
 
 
-;;;; Error handling
+;;; Error handling
 
 (define-condition paredit-error (simple-error)
   ()
@@ -56,7 +58,7 @@
          :format-arguments args))
 
 
-;;;; Node predicates and accessors
+;;; Node predicates and accessors
 
 (defun node-list-p (node)
   "True if NODE is an :expr CST node whose value is a cons (i.e. a list form)."
@@ -65,6 +67,7 @@
        (consp (cst-node-value node))))
 
 (defun node-atom-p (node)
+  "True if NODE is an :expr CST node whose value is an atom."
   (and (typep node 'cst-node)
        (eq (cst-node-kind node) :expr)
        (atom (cst-node-value node))))
@@ -90,10 +93,11 @@
         (string-downcase (symbol-name (cst-node-value (first children))))))))
 
 (defun normalize-string (thing)
+  "Downcase the printed representation of THING for comparison."
   (string-downcase (princ-to-string thing)))
 
 
-;;;; Top-level form matching
+;;; Top-level form matching
 
 (defun defmethod-candidates (form)
   "Generate candidate name strings for a defmethod form."
@@ -166,9 +170,10 @@
                      (length matches) form-type form-name))))))
 
 
-;;;; Target resolution
+;;; Target resolution
 
 (defun whitespace-normalize (text)
+  "Collapse all runs of whitespace in TEXT to single spaces and trim edges."
   (string-trim '(#\Space #\Tab #\Newline #\Return)
                (regex-replace-all "\\s+" text " ")))
 
@@ -245,7 +250,7 @@
       (t (values root root)))))
 
 
-;;;; Tree navigation
+;;; Tree navigation
 
 (defun find-parent (root target)
   "Find the parent of TARGET within ROOT. NIL if TARGET is ROOT."
@@ -272,8 +277,8 @@
     (values (nreverse before) found (nreverse after))))
 
 
-;;;; Transform functions
-;;;; All transforms are pure: (text root target &key ...) -> new-text
+;;; Transform functions
+;;; All transforms are pure: (text root target &key ...) -> new-text
 
 (defun transform-wrap (text root target &key (count 1) wrapper head)
   "Wrap TARGET (and optionally COUNT-1 following siblings) in new delimiters."
@@ -592,9 +597,10 @@
                          (subseq text pos))))))
 
 
-;;;; Read-only operations
+;;; Read-only operations
 
 (defun node-kind-string (node)
+  "Return a human-readable kind string for NODE."
   (cond
     ((eq (cst-node-kind node) :skipped) "comment")
     ((node-list-p node) "list")
@@ -604,6 +610,7 @@
     (t "atom")))
 
 (defun truncate-text (text max-len)
+  "Truncate TEXT to MAX-LEN characters, appending \"...\" if needed."
   (if (<= (length text) max-len)
       text
       (concatenate 'string (subseq text 0 (- max-len 3)) "...")))

@@ -1,5 +1,11 @@
 (uiop:define-package #:40ants-lisp-dev-mcp/cst
   (:use #:cl)
+  (:import-from #:eclector.parse-result
+                #:parse-result-client
+                #:make-expression-result
+                #:make-skipped-input-result)
+  (:import-from #:eclector.base)
+  (:import-from #:eclector.reader)
   (:export #:cst-node
            #:make-cst-node
            #:cst-node-kind

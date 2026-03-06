@@ -31,3 +31,8 @@
 
 (asdf:register-system-packages "log4cl" '("LOG"))
 (asdf:register-system-packages "bordeaux-threads" '("BORDEAUX-THREADS-2"))
+(asdf:register-system-packages "eclector" '("ECLECTOR.PARSE-RESULT"
+                                            "ECLECTOR.BASE"
+                                            "ECLECTOR.READER"
+                                            "ECLECTOR.READTABLE"))
+(asdf:register-system-packages "yason" '("YASON"))

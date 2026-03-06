@@ -4,7 +4,6 @@
                 #:deftest
                 #:ok
                 #:ng
-                #:signals
                 #:testing)
   (:import-from #:40ants-lisp-dev-mcp/cst
                 #:cst-node
@@ -41,7 +40,12 @@
 (in-package #:40ants-lisp-dev-mcp-tests/paredit)
 
 
-;;;; Test helpers
+;;; Test helpers
+
+(defmacro signals-paredit-error (&body body)
+  "Assert that BODY signals a paredit-error condition."
+  `(ok (handler-case (progn ,@body nil)
+         (paredit-error () t))))
 
 (defun parse-single (text)
   "Parse TEXT and return the single top-level CST node."
@@ -53,6 +57,7 @@
                                                      form-type form-name line
                                                      &allow-other-keys)
   "Parse TEXT, resolve target, apply TRANSFORM-FN with remaining keyword args."
+  (declare (ignore transform-fn))
   (let* ((nodes (parse-top-level-forms text))
          (path-list (when path
                       (etypecase path
@@ -81,7 +86,7 @@
       (apply transform-fn text root-node target-node transform-args))))
 
 
-;;;; CST parsing tests
+;;; CST parsing tests
 
 (deftest test-parse-simple-atom ()
   (testing "Parse a single atom"
@@ -144,12 +149,12 @@
       ;; "1"
       (ok (= 3 (cst-node-start (second children))))
       (ok (= 4 (cst-node-end (second children))))
-      ;; "(* 2 3)"
+      ;; "(* 2 3)" starts at 5, ends at 12
       (ok (= 5 (cst-node-start (third children))))
-      (ok (= 13 (cst-node-end (third children)))))))
+      (ok (= 12 (cst-node-end (third children)))))))
 
 
-;;;; Target resolution tests
+;;; Target resolution tests
 
 (deftest test-resolve-by-text ()
   (testing "Resolve target by source text"
@@ -182,11 +187,11 @@
   (testing "Error when target not found"
     (let* ((text "(a b c)")
            (nodes (parse-top-level-forms text)))
-      (signals paredit-error
-        (resolve-target nodes text :target "zzz")))))
+    (signals-paredit-error
+      (resolve-target nodes text :target "zzz")))))
 
 
-;;;; Wrap tests (Emacs paredit: M-( wraps the following sexp)
+;;; Wrap tests (Emacs paredit: M-( wraps the following sexp)
 
 (deftest test-wrap-single ()
   (testing "Wrap single expression"
@@ -214,7 +219,7 @@
                                :wrapper "square")))))
 
 
-;;;; Unwrap tests (Emacs paredit: M-s splices)
+;;; Unwrap tests (Emacs paredit: M-s splices)
 
 (deftest test-unwrap-all ()
   (testing "Unwrap keeping all children"
@@ -231,11 +236,11 @@
 
 (deftest test-unwrap-atom-error ()
   (testing "Cannot unwrap an atom"
-    (signals paredit-error
+    (signals-paredit-error
       (do-transform "(a b c)" #'transform-unwrap "b"))))
 
 
-;;;; Raise tests (Emacs paredit: M-r raises)
+;;; Raise tests (Emacs paredit: M-r raises)
 
 (deftest test-raise ()
   (testing "Raise replaces parent with child"
@@ -250,7 +255,7 @@
                  (do-transform "(+ (* 2 3) 4)" #'transform-raise "(* 2 3)")))))
 
 
-;;;; Slurp forward tests (Emacs paredit: C-) slurps forward)
+;;; Slurp forward tests (Emacs paredit: C-) slurps forward)
 
 (deftest test-slurp-forward ()
   (testing "Slurp one sibling forward"
@@ -267,11 +272,11 @@
 
 (deftest test-slurp-forward-no-sibling ()
   (testing "Cannot slurp when no sibling after"
-    (signals paredit-error
+    (signals-paredit-error
       (do-transform "(a (b))" #'transform-slurp-forward "(b)"))))
 
 
-;;;; Slurp backward tests (Emacs paredit: C-( slurps backward)
+;;; Slurp backward tests (Emacs paredit: C-( slurps backward)
 
 (deftest test-slurp-backward ()
   (testing "Slurp one sibling backward"
@@ -281,11 +286,11 @@
 
 (deftest test-slurp-backward-no-sibling ()
   (testing "Cannot slurp backward when no preceding sibling"
-    (signals paredit-error
+    (signals-paredit-error
       (do-transform "((a) b)" #'transform-slurp-backward "(a)"))))
 
 
-;;;; Barf forward tests (Emacs paredit: C-} barfs forward)
+;;; Barf forward tests (Emacs paredit: C-} barfs forward)
 
 (deftest test-barf-forward ()
   (testing "Barf last child forward"
@@ -296,11 +301,11 @@
 
 (deftest test-barf-forward-too-many ()
   (testing "Cannot barf more children than available"
-    (signals paredit-error
+    (signals-paredit-error
       (do-transform "(a (b) c)" #'transform-barf-forward "(b)" :count 1))))
 
 
-;;;; Barf backward tests (Emacs paredit: C-{ barfs backward)
+;;; Barf backward tests (Emacs paredit: C-{ barfs backward)
 
 (deftest test-barf-backward ()
   (testing "Barf first child backward"
@@ -310,7 +315,7 @@
                                "(b c d)")))))
 
 
-;;;; Kill tests (Emacs paredit: C-k kills sexp)
+;;; Kill tests (Emacs paredit: C-k kills sexp)
 
 (deftest test-kill-middle ()
   (testing "Kill a middle expression"
@@ -337,7 +342,7 @@
                  (do-transform "(a b c d)" #'transform-kill "b" :count 2)))))
 
 
-;;;; Transpose tests (Emacs paredit: C-M-t transposes)
+;;; Transpose tests (Emacs paredit: C-M-t transposes)
 
 (deftest test-transpose ()
   (testing "Transpose two siblings"
@@ -353,11 +358,11 @@
 
 (deftest test-transpose-no-next ()
   (testing "Cannot transpose last sibling"
-    (signals paredit-error
+    (signals-paredit-error
       (do-transform "(a b c)" #'transform-transpose "c"))))
 
 
-;;;; Split tests (Emacs paredit: M-S splits)
+;;; Split tests (Emacs paredit: M-S splits)
 
 (deftest test-split ()
   (testing "Split list at target"
@@ -373,7 +378,7 @@
                                :clone-head t)))))
 
 
-;;;; Join tests (Emacs paredit: M-J joins)
+;;; Join tests (Emacs paredit: M-J joins)
 
 (deftest test-join ()
   (testing "Join two adjacent lists"
@@ -391,7 +396,7 @@
       (ok (string= "((progn a b))" result)))))
 
 
-;;;; Replace tests
+;;; Replace tests
 
 (deftest test-replace-atom ()
   (testing "Replace an atom with new code"
@@ -413,7 +418,7 @@
       (ok (search "(let ((x 1))" result)))))
 
 
-;;;; Insert tests
+;;; Insert tests
 
 (deftest test-insert-before ()
   (testing "Insert before a sibling"
@@ -447,7 +452,7 @@
       (ok (string= "(defun foo () 42)" result)))))
 
 
-;;;; Show-structure tests
+;;; Show-structure tests
 
 (deftest test-show-structure ()
   (testing "Show structure returns tree text"
@@ -458,7 +463,7 @@
       (ok (search "defun" result)))))
 
 
-;;;; Get-enclosing tests
+;;; Get-enclosing tests
 
 (deftest test-get-enclosing ()
   (testing "Get enclosing form info"
@@ -471,7 +476,7 @@
           (ok (search "list" result)))))))
 
 
-;;;; Round-trip tests
+;;; Round-trip tests
 
 (deftest test-roundtrip-wrap-unwrap ()
   (testing "Wrap then unwrap is identity"
@@ -510,7 +515,7 @@
           (ok (string= text pass2)))))))
 
 
-;;;; Emacs paredit-inspired scenarios
+;;; Emacs paredit-inspired scenarios
 
 (deftest test-paredit-scenario-wrap-function-call ()
   (testing "Wrap a value in a function call: x -> (1+ x)"
@@ -552,7 +557,7 @@
                 (ok (search "defun hello" final))))))))))
 
 
-;;;; JSON AST tests
+;;; JSON AST tests
 
 (deftest test-json-ast-basic ()
   (testing "JSON AST contains expected fields"

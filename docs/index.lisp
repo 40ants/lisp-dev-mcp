@@ -55,7 +55,10 @@
                                    "URL"
                                    "URI"
                                    "RPC"
-                                   "GIT"))
+                                   "GIT"
+                                   "CST"
+                                   "AST"
+                                   "S-expression"))
   (40ants-lisp-dev-mcp system)
   "
 [![](https://github-actions.40ants.com/40ants/lisp-dev-mcp/matrix.svg?only=ci.run-tests)](https://github.com/40ants/lisp-dev-mcp/actions)

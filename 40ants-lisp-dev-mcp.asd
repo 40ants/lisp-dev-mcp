@@ -21,9 +21,18 @@
                "openrpc-server"
                "jsonrpc/errors"
                "bordeaux-threads"
-               "40ants-lisp-dev-mcp/core")
+               "eclector"
+               "cl-ppcre"
+               "yason"
+               "40ants-lisp-dev-mcp/core"
+               "40ants-lisp-dev-mcp/paredit-tools")
   :in-order-to ((test-op (test-op "40ants-lisp-dev-mcp-tests"))))
 
 
 (asdf:register-system-packages "log4cl" '("LOG"))
 (asdf:register-system-packages "bordeaux-threads" '("BORDEAUX-THREADS-2"))
+(asdf:register-system-packages "eclector" '("ECLECTOR.PARSE-RESULT"
+                                            "ECLECTOR.BASE"
+                                            "ECLECTOR.READER"
+                                            "ECLECTOR.READTABLE"))
+(asdf:register-system-packages "yason" '("YASON"))

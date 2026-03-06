@@ -1,0 +1,34 @@
+{
+  "name": "40ants-lisp-dev-mcp",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/egao1980/features/roswell:1": {
+      "version": "latest",
+      "installLisp": "sbcl-bin",
+      "useLisp": "sbcl-bin",
+      "installTools": true,
+      "toolsToInstall": "qlot",
+      "installUltralisp": true
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rheller.alive"
+      ],
+      "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+          {
+            "label": "Run tests",
+            "type": "shell",
+            "command": "qlot exec ros run --eval '(push (truename \".\") asdf:*central-registry*)' --eval '(asdf:test-system \"40ants-lisp-dev-mcp\")' --quit",
+            "group": "test",
+            "presentation": { "reveal": "always", "panel": "shared" }
+          }
+        ]
+      }
+    }
+  },
+  "postCreateCommand": "cd /workspaces/lisp-dev-mcp && qlot install"
+}

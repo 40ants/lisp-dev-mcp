@@ -3,13 +3,17 @@
   (:import-from #:40ants-mcp)
   (:import-from #:40ants-logging)
   (:import-from #:serapeum
-                #:fmt)
+                #:fmt
+                #:href
+                #:dict
+                #:->)
   (:import-from #:openrpc-server)
   (:import-from #:jsonrpc/errors)
   (:import-from #:log :info)
   (:import-from #:40ants-slynk
                 #:start-slynk-if-needed)
-  (:import-from #:alexandria)
+  (:import-from #:alexandria
+                #:write-string-into-file)
   (:import-from #:40ants-mcp/content/text
                 #:text-content)
   (:import-from #:40ants-mcp/server/errors
@@ -19,7 +23,20 @@
                 #:define-tool)
   (:import-from #:bordeaux-threads-2
                 #:make-thread)
-  (:export #:start-server))
+  (:import-from #:yason)
+  (:import-from #:str
+                #:split)
+  (:import-from #:find-port
+                #:find-port
+                #:port-open-p)
+  (:export #:start-server
+           #:*opencode-config-pathname*
+           #:choose-port
+           #:get-port-from-assistant-config
+           #:update-port-in-config
+           #:read-config
+           #:write-config
+           #:make-default-config))
 (in-package #:40ants-lisp-dev-mcp/core)
 
 
@@ -103,19 +120,160 @@
                  (make-output-results))))))))))
 
 
-(defun start-server (&key port (in-thread t))
+(defvar *opencode-config-pathname*
+  #P"opencode.json"
+  "Pathname of the Opencode config file which is updated when
+START-SERVER is called with :UPDATE-CONFIG T.
+
+You can rebind this special variable or pass an explicit
+:OPENCODE-CONFIG argument to START-SERVER, CHOOSE-PORT,
+GET-PORT-FROM-ASSISTANT-CONFIG and UPDATE-PORT-IN-CONFIG.")
+
+
+(-> read-config (pathname)
+    (values hash-table &optional))
+
+(defun read-config (path)
+  (yason:parse path
+               :json-arrays-as-vectors nil
+               :json-booleans-as-symbols t
+               :json-nulls-as-keyword t))
+
+
+(-> write-config (pathname hash-table)
+    (values &optional))
+
+(defun write-config (file data)
+  (let ((content (yason:with-output-to-string* (:indent 4)
+                   (yason:encode data))))
+    (write-string-into-file content
+                            file
+                            :if-exists :supersede)
+    (values)))
+
+
+(-> make-default-config ()
+    (values hash-table &optional))
+
+(defun make-default-config ()
+  (dict "$schema" "https://opencode.ai/config.json"
+        "skills" (dict "paths"
+                       #(".agents/skills"))
+        "mcp" (dict "lisp-dev-mcp"
+                    (dict "type" "remote"
+                          "url" "to be replaced"))))
+
+
+(-> get-port-from-assistant-config (&key (:config pathname))
+    (values (or null integer) &optional))
+
+(defun get-port-from-assistant-config (&key (config *opencode-config-pathname*))
+  "Returns the port recorded in the Opencode config, or NIL."
+  (let ((file (probe-file config)))
+    (when file
+      (let* ((data (read-config file))
+             (url (href data "mcp" "lisp-dev-mcp" "url")))
+        (when url
+          (let ((third-part (third (split #\: url))))
+            (when third-part
+              (let ((port-as-str (first (split #\/ third-part))))
+                (values (parse-integer port-as-str))))))))))
+
+
+(-> update-port-in-config (integer &key (:config pathname))
+    (values &optional))
+
+(defun update-port-in-config (port &key (config *opencode-config-pathname*))
+  "Writes the given PORT into the Opencode config file,
+creating a default config when the file does not exist yet."
+  (let* ((file (probe-file config))
+         (data (if file
+                 (read-config file)
+                 (make-default-config)))
+         (url (fmt "http://localhost:~A/mcp"
+                   port)))
+    (setf (href data "mcp" "lisp-dev-mcp" "url")
+          url)
+    (write-config config data)
+    (values)))
+
+
+(-> choose-port ((or integer (eql :auto) string) &key (:config pathname))
+    (values integer boolean &optional))
+
+(defun choose-port (port &key (config *opencode-config-pathname*))
+  "Resolves PORT into a concrete TCP port number and returns it as the first value.
+
+As the second value returns T when the resolved port differs from the one
+recorded in the Opencode config.
+
+   PORT can be:
+     - an INTEGER, used as-is after checking it is free;
+     - the :AUTO keyword (or the string \"auto\"), in which case a free port
+       is selected automatically, reusing the port from the Opencode config
+       when it is still available."
+  (let* ((port-from-assistant-config
+           (get-port-from-assistant-config :config config))
+         (port-to-return
+           (cond
+             ((or (eql port :auto)
+                  (and (stringp port)
+                       (string-equal port "auto")))
+              (cond
+                ;; Try to reuse port from Opencode's config
+                ;; if MCP is already configured
+                ((and port-from-assistant-config
+                      (port-open-p port-from-assistant-config))
+                 port-from-assistant-config)
+                ;; Otherwise we will choose a new port
+                (t
+                 (find-port))))
+             (t
+              (let ((parsed (etypecase port
+                              (integer port)
+                              (string (parse-integer port)))))
+                (unless (port-open-p parsed)
+                  (error "Port ~A already taken by other program."
+                         parsed))
+                parsed)))))
+    (values port-to-return
+            (not
+             (equal port-to-return
+                    port-from-assistant-config)))))
+
+
+(defun start-server (&key port (in-thread t) update-config (opencode-config *opencode-config-pathname*))
   "Starts the MCP server.
 
-   PORT: TCP port number (integer or nil for stdio transport).
-   IN-THREAD: Boolean, if true starts server in a background thread, otherwise blocks (default).
+   PORT controls the transport and the port:
+     - NIL (the default) uses the stdio transport;
+     - an INTEGER uses the Streaming HTTP transport on that TCP port;
+     - :AUTO selects a free TCP port automatically, reusing the port from
+       the Opencode config when it is still available.
 
-   Returns thread object if IN-THREAD is true, otherwise blocks."
-  (flet ((server-fn ()
-           (40ants-mcp/server/definition:start-server dev-tools
-                                                      :transport (if port
-                                                                   :http
-                                                                   :stdio)
-                                                      :port port)))
-    (if in-thread
-      (make-thread #'server-fn :name "MCP Server Thread")
-      (funcall #'server-fn))))
+   IN-THREAD controls whether the server runs in a background thread (the
+   default) or blocks the caller.
+
+   When UPDATE-CONFIG is true and a port was selected (or reused), the chosen
+   port is written into the Opencode config file pointed to by OPENCODE-CONFIG
+   \(which defaults to *OPENCODE-CONFIG-PATHNAME*).
+
+   Returns the server thread when IN-THREAD is true, otherwise blocks."
+  (multiple-value-bind (chosen-port port-differs-from-config)
+      (when port
+        (choose-port port :config opencode-config))
+    
+    (when (and chosen-port
+               update-config
+               port-differs-from-config)
+      (update-port-in-config chosen-port :config opencode-config))
+    
+    (flet ((server-fn ()
+             (40ants-mcp/server/definition:start-server dev-tools
+                                                        :transport (if chosen-port
+                                                                     :http
+                                                                     :stdio)
+                                                        :port chosen-port)))
+      (if in-thread
+        (make-thread #'server-fn :name "MCP Server Thread")
+        (funcall #'server-fn)))))

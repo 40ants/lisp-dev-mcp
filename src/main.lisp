@@ -12,10 +12,12 @@
 (in-package #:40ants-lisp-dev-mcp/main)
 
 
-(defmain (main) ((port "TCP port to listen on. If given, Streaming HTTP transport will be used.")
+(defmain (main) ((port "TCP port to listen on. If given, Streaming HTTP transport will be used. If \"auto\" then port will be choosen automatically.")
                  (debug "If this flag set, then a debugger will be opened when you've conntected to the server with SLY."
                         :flag t)
                  (log-filename "Path to a file with log.")
+                 (update-config "Write choosen port to opencode.json config."
+                                :flag t)
                  (verbose "Show debug messages in the log."
                           :flag t))
   "Main entry point for the Roswell script"
@@ -40,8 +42,10 @@
 
   (when debug
     (setf jsonrpc/errors:*debug-on-error* t))
-  
-  (40ants-lisp-dev-mcp/core:start-server
-   :port (when port
-           (parse-integer port))
-   :in-thread nil))
+
+  (start-server :port (cond
+                        ((null port) nil)
+                        ((string-equal port "auto") :auto)
+                        (t (parse-integer port)))
+                :update-config update-config
+                :in-thread nil))

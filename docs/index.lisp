@@ -125,7 +125,44 @@ If you want to debug MCP server, then you might start it will logging output and
 
 # Running in HTTP streaming mode
 
+## With OpenCode
+
+Let the server pick a free port and record it into `opencode.json` automatically.
 Start the lisp process:
+
+```
+qlot exec roswell/lisp-dev-mcp.ros --port auto --update-config
+```
+
+or, from the REPL:
+
+```
+(ql:quickload :40ants-lisp-dev-mcp)
+
+(40ants-lisp-dev-mcp/core:start-server :port :auto :update-config t)
+```
+
+The server reuses the port already recorded in `opencode.json` when it is still
+free, otherwise it chooses a new one and writes `http://localhost:<port>/mcp`
+into the `mcp.lisp-dev-mcp.url` key. The resulting config is picked up by OpenCode
+without any manual editing:
+
+```
+{
+    "$schema": "https://opencode.ai/config.json",
+    "mcp": {
+        "lisp-dev-mcp": {
+            "type": "remote",
+            "url": "http://localhost:<port>/mcp"
+        }
+    }
+}
+```
+
+## With a fixed port (other IDEs)
+
+For clients that use a different config format, or when you prefer a fixed port,
+pass an explicit port number. Start the lisp process:
 
 ```
 qlot exec roswell/lisp-dev-mcp.ros --port 7890

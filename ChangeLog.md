@@ -2,6 +2,13 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FCHANGELOG-3A-3A-7C0-2E2-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.2.0 (2026-08-02)
+
+* `start-server` learned to pick a free port automatically when `:PORT` is given as `:AUTO`, and to write it into `opencode.json` via the new `:UPDATE-CONFIG` argument, so it is now usable from the `REPL` or other programs.
+* Exported `choose-port`, `update-port-in-config`, `get-port-from-assistant-config`, `*opencode-config-pathname*` and the config helpers.
+
 <a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FCHANGELOG-3A-3A-7C0-2E1-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.1.0 (2026-01-25)

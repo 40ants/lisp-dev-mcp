@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rss version="2.0">
+    <channel>
+        <title>40ants-lisp-dev-mcp-docs ChangeLog</title>
+        <link>https://40ants/lisp-dev-mcp/</link>
+        <generator>xml-emitter</generator>
+        <language>en-us</language>
+        <item>
+            <title>0.2.0  (2026-08-02)</title>
+            <description>&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;code&gt;start-server&lt;/code&gt; learned to pick a free port automatically when &lt;code&gt;:PORT&lt;/code&gt; is given as &lt;code&gt;:AUTO&lt;/code&gt;, and to write it into &lt;code&gt;opencode.json&lt;/code&gt; via the new &lt;code&gt;:UPDATE-CONFIG&lt;/code&gt; argument, so it is now usable from the &lt;code&gt;REPL&lt;/code&gt; or other programs.&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Exported &lt;code&gt;choose-port&lt;/code&gt;, &lt;code&gt;update-port-in-config&lt;/code&gt;, &lt;code&gt;get-port-from-assistant-config&lt;/code&gt;, &lt;code&gt;*opencode-config-pathname*&lt;/code&gt; and the config helpers.&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</description>
+            <pubDate>Sun, 02 Aug 2026 00:00:00 +0000</pubDate>
+        </item>
+        <item>
+            <title>0.1.0  (2026-01-25)</title>
+            <description>&lt;ul&gt;&lt;li&gt;&lt;p&gt;Initial version.&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</description>
+            <pubDate>Sun, 25 Jan 2026 00:00:00 +0000</pubDate>
+        </item>
+    </channel>
+</rss>

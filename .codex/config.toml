@@ -1,0 +1,5 @@
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+
+[mcp_servers.lisp-dev-mcp]
+url = "http://localhost:40000/mcp"

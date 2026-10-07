@@ -211,7 +211,7 @@ then configure your `IDE`:
 
 <a id="x-28-23A-28-2824-29-20BASE-CHAR-20-2E-20-2240ANTS-LISP-DEV-MCP-2FCORE-22-29-20PACKAGE-29"></a>
 
-#### [package](3b6c) `40ants-lisp-dev-mcp/core`
+#### [package](fd49) `40ants-lisp-dev-mcp/core`
 
 <a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FINDEX-3A-3A-7C-4040ANTS-LISP-DEV-MCP-2FCORE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -219,7 +219,7 @@ then configure your `IDE`:
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3ACHOOSE-PORT-20FUNCTION-29"></a>
 
-##### [function](528a) `40ants-lisp-dev-mcp/core:choose-port` port &key (config \*opencode-config-pathname\*) (codex-config \*codex-config-pathname\*) (agents '(:opencode))
+##### [function](3135) `40ants-lisp-dev-mcp/core:choose-port` port &key (config \*opencode-config-pathname\*) (codex-config \*codex-config-pathname\*) (agents '(:opencode))
 
 Resolves `PORT` into a concrete `TCP` port number and returns it as the first value.
 
@@ -235,26 +235,26 @@ selected agent's recorded port (including a missing config).
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3AGET-PORT-FROM-ASSISTANT-CONFIG-20FUNCTION-29"></a>
 
-##### [function](6dbd) `40ants-lisp-dev-mcp/core:get-port-from-assistant-config` &key (agent :opencode) (config (agent-config-pathname agent))
+##### [function](75a1) `40ants-lisp-dev-mcp/core:get-port-from-assistant-config` &key (agent :opencode) (config (agent-config-pathname agent))
 
 Returns the `MCP` port recorded in `CONFIG` for `AGENT`, or `NIL`.
 `AGENT` is `:OPENCODE` (the default) or `:CODEX`; `CONFIG` defaults to that agent's pathname.
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3AMAKE-DEFAULT-CONFIG-20FUNCTION-29"></a>
 
-##### [function](da46) `40ants-lisp-dev-mcp/core:make-default-config`
+##### [function](87d3) `40ants-lisp-dev-mcp/core:make-default-config`
 
 Returns the default OpenCode config with a placeholder `MCP` `URL`.
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3AREAD-CONFIG-20FUNCTION-29"></a>
 
-##### [function](1646) `40ants-lisp-dev-mcp/core:read-config` path
+##### [function](b78d) `40ants-lisp-dev-mcp/core:read-config` path
 
 Reads the OpenCode `JSON` config at `PATH`, preserving arrays, booleans and nulls.
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3ASTART-SERVER-20FUNCTION-29"></a>
 
-##### [function](9456) `40ants-lisp-dev-mcp/core:start-server` &key port (in-thread t) update-config (agents '(:opencode)) (opencode-config \*opencode-config-pathname\*) (codex-config \*codex-config-pathname\*)
+##### [function](8ecd) `40ants-lisp-dev-mcp/core:start-server` &key port (in-thread t) update-config (agents '(:opencode)) (opencode-config \*opencode-config-pathname\*) (codex-config \*codex-config-pathname\*)
 
 Starts the `MCP` server.
 
@@ -279,7 +279,7 @@ Returns the server thread when `IN-THREAD` is true, otherwise blocks.
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3AUPDATE-PORT-IN-CONFIG-20FUNCTION-29"></a>
 
-##### [function](4300) `40ants-lisp-dev-mcp/core:update-port-in-config` port &key (agent :opencode) (config (agent-config-pathname agent))
+##### [function](17ae) `40ants-lisp-dev-mcp/core:update-port-in-config` port &key (agent :opencode) (config (agent-config-pathname agent))
 
 Writes `PORT` into the `MCP` `URL` in `CONFIG` for `AGENT` (`:OPENCODE` or `:CODEX`).
 Creates missing directories and config tables. Codex gets enabled=true and
@@ -288,7 +288,7 @@ are preserved. `TOML` comments and formatting are not preserved.
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3AWRITE-CONFIG-20FUNCTION-29"></a>
 
-##### [function](8a0f) `40ants-lisp-dev-mcp/core:write-config` file data
+##### [function](39a8) `40ants-lisp-dev-mcp/core:write-config` file data
 
 Writes `DATA` as an OpenCode `JSON` config to `FILE`.
 
@@ -298,7 +298,7 @@ Writes `DATA` as an OpenCode `JSON` config to `FILE`.
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3A-2ACODEX-CONFIG-PATHNAME-2A-20-28VARIABLE-29-29"></a>
 
-##### [variable](77c5) `40ants-lisp-dev-mcp/core:*codex-config-pathname*` #P".codex/config.toml"
+##### [variable](bd82) `40ants-lisp-dev-mcp/core:*codex-config-pathname*` #P".codex/config.toml"
 
 Pathname of the Codex config, relative to the current working directory.
 Rebind this variable or pass `:CODEX-CONFIG` to [`start-server`][da24] and [`choose-port`][3ec7],
@@ -306,7 +306,7 @@ or `:CONFIG` with `:AGENT` `:CODEX` to the config helpers.
 
 <a id="x-2840ANTS-LISP-DEV-MCP-2FCORE-3A-2AOPENCODE-CONFIG-PATHNAME-2A-20-28VARIABLE-29-29"></a>
 
-##### [variable](fcd9) `40ants-lisp-dev-mcp/core:*opencode-config-pathname*` #P"opencode.json"
+##### [variable](9c1c) `40ants-lisp-dev-mcp/core:*opencode-config-pathname*` #P"opencode.json"
 
 Pathname of the Opencode config file which is updated when
 [`start-server`][da24] is called with `:UPDATE-CONFIG` T.
@@ -322,16 +322,16 @@ or pass `:CONFIG` to the config helpers and [`choose-port`][3ec7].
 [da24]: https://40ants/lisp-dev-mcp/#x-2840ANTS-LISP-DEV-MCP-2FCORE-3ASTART-SERVER-20FUNCTION-29
 [6421]: https://github.com/40ants/lisp-dev-mcp
 [7c1b]: https://github.com/40ants/lisp-dev-mcp/actions
-[3b6c]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L1
-[fcd9]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L124
-[77c5]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L133
-[1646]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L157
-[8a0f]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L168
-[da46]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L181
-[6dbd]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L225
-[4300]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L269
-[528a]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L283
-[9456]: https://github.com/40ants/lisp-dev-mcp/blob/e6cdd51ae38962652eec3fc90fb32c0aa5c7d6ff/src/core.lisp#L328
+[fd49]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L1
+[9c1c]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L124
+[bd82]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L133
+[b78d]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L157
+[39a8]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L168
+[87d3]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L181
+[75a1]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L225
+[17ae]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L269
+[3135]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L283
+[8ecd]: https://github.com/40ants/lisp-dev-mcp/blob/acb972963f7d066336d4acb6c66b2f8faf6919ff/src/core.lisp#L328
 [58fb]: https://github.com/40ants/lisp-dev-mcp/issues
 [422a]: https://quickdocs.org/40ants-logging
 [6700]: https://quickdocs.org/40ants-mcp

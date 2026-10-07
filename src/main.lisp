@@ -8,15 +8,34 @@
   (:import-from #:40ants-slynk
                 #:start-slynk-if-needed)
   (:import-from #:jsonrpc/errors)
-  (:import-from #:log))
+  (:import-from #:log)
+  (:import-from #:str)
+  (:export #:parse-agents))
 (in-package #:40ants-lisp-dev-mcp/main)
+
+
+(defun parse-agents (value)
+  "Parses comma-separated agent names into a list of :OPENCODE and :CODEX.
+Names are case-insensitive and may contain surrounding whitespace. NIL uses
+the default (:OPENCODE). Unknown names and empty elements signal an error."
+  (if (null value)
+      (list :opencode)
+      (remove-duplicates
+       (loop for name in (str:split "," value :omit-nulls nil)
+             for trimmed = (str:trim name)
+             collect (cond
+                       ((string-equal trimmed "opencode") :opencode)
+                       ((string-equal trimmed "codex") :codex)
+                       (t (error "Unknown agent ~S; expected opencode or codex." trimmed))))
+       :from-end t)))
 
 
 (defmain (main) ((port "TCP port to listen on. If given, Streaming HTTP transport will be used. If \"auto\" then port will be choosen automatically.")
                  (debug "If this flag set, then a debugger will be opened when you've conntected to the server with SLY."
                         :flag t)
                  (log-filename "Path to a file with log.")
-                 (update-config "Write choosen port to opencode.json config."
+                 (agents "Comma-separated agents: opencode,codex. Defaults to opencode.")
+                 (update-config "Write the chosen port to the selected agents' configs."
                                 :flag t)
                  (verbose "Show debug messages in the log."
                           :flag t))
@@ -48,4 +67,5 @@
                         ((string-equal port "auto") :auto)
                         (t (parse-integer port)))
                 :update-config update-config
+                :agents (parse-agents agents)
                 :in-thread nil))

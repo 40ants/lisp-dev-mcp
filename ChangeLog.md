@@ -2,6 +2,16 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FCHANGELOG-3A-3A-7C0-2E3-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.3.0 (2026-10-08)
+
+* Added Codex config support in `.codex/config.toml`, including creation of missing files, directories and `MCP` sections. Existing enabled and timeout values are preserved; absent values default to true, 10 and 60 seconds.
+* Added `:AGENTS` to `start-server` and `--agents` to the `CLI`; the default remains OpenCode.
+* Automatic port selection checks selected agents in order, and config updates now include every selected agent even when the port is reused.
+* Config parse or serialization errors abort updates before any selected config is written.
+* OpenCode config updates preserve `JSON` arrays, including empty arrays.
+
 <a id="x-2840ANTS-LISP-DEV-MCP-DOCS-2FCHANGELOG-3A-3A-7C0-2E2-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.2.0 (2026-08-02)

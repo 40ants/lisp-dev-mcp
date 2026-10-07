@@ -39,6 +39,7 @@
 
 (defsection @index (:title "40ants-lisp-dev-mcp - MCP which gives LLM tools for working with running Lisp image."
                     :ignore-words ("JSON"
+                                   "TOML"
                                    "HTTP"
                                    "TODO"
                                    "Unlicense"
@@ -157,6 +158,75 @@ without any manual editing:
         }
     }
 }
+```
+
+## With Codex or multiple agents
+
+Select Codex to create or update `.codex/config.toml` in the current directory:
+
+```
+qlot exec roswell/lisp-dev-mcp.ros --port auto --update-config --agents codex
+```
+
+or, from the REPL:
+
+```
+(40ants-lisp-dev-mcp/core:start-server
+ :port :auto :update-config t :agents '(:codex))
+```
+
+The minimal Codex config contains:
+
+```toml
+[mcp_servers.lisp-dev-mcp]
+url = "http://localhost:40001/mcp"
+enabled = true
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+```
+
+The URL uses the chosen port. Existing settings, other sections and MCP servers
+are preserved; enabled and timeout defaults are added only when absent. A file
+containing only `[features]` is supported, as are missing files and directories.
+For example, starting the server on port 40001 with `:agents '(:codex)` and
+`:update-config t` updates this existing file:
+
+```toml
+[features]
+hooks = true
+```
+
+to a config with both sections:
+
+```toml
+[features]
+hooks = true
+
+[mcp_servers.lisp-dev-mcp]
+url = "http://localhost:40001/mcp"
+enabled = true
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+```
+
+An existing `enabled = false` and custom timeout values remain unchanged.
+Comments and formatting may change. The cl-toml library supports TOML 0.4;
+unsupported syntax causes an error before config files are written.
+
+To update both agents, use `--agents opencode,codex` or
+`:agents '(:opencode :codex)`. Automatic port selection checks recorded ports
+in the selected order and reuses the first free port. Both agents receive the
+same URL, including when one config already has the chosen port and the other
+needs to be created. The default is `:agents '(:opencode)`; `:agents nil` skips
+config reads and updates. Stdio mode never writes config files.
+
+Override paths with `:opencode-config` and `:codex-config`, or rebind
+`*opencode-config-pathname*` and `*codex-config-pathname*`.
+The config helpers also accept `:agent :codex`, for example:
+
+```
+(40ants-lisp-dev-mcp/core:update-port-in-config
+ 40001 :agent :codex :config #P".codex/config.toml")
 ```
 
 ## With a fixed port (other IDEs)

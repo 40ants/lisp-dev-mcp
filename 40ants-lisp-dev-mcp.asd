@@ -18,6 +18,7 @@
                "alexandria"
                "trivial-backtrace"
                "str"
+               "cl-toml"
                "openrpc-server"
                "jsonrpc/errors"
                "bordeaux-threads"

@@ -3,6 +3,7 @@
   (:import-from #:40ants-mcp)
   (:import-from #:40ants-logging)
   (:import-from #:serapeum
+                #:href-default
                 #:fmt
                 #:href
                 #:dict
@@ -172,7 +173,8 @@ GET-PORT-FROM-ASSISTANT-CONFIG and UPDATE-PORT-IN-CONFIG.")
   (let ((file (probe-file config)))
     (when file
       (let* ((data (read-config file))
-             (url (href data "mcp" "lisp-dev-mcp" "url")))
+             (url (when data
+                    (href-default nil data "mcp" "lisp-dev-mcp" "url"))))
         (when url
           (let ((third-part (third (split #\: url))))
             (when third-part
@@ -192,8 +194,18 @@ creating a default config when the file does not exist yet."
                  (make-default-config)))
          (url (fmt "http://localhost:~A/mcp"
                    port)))
+    
+    (unless (href-default nil data "mcp")
+      (setf (href data "mcp")
+            (dict)))
+    
+    (unless (href-default nil data "mcp" "lisp-dev-mcp")
+      (setf (href data "mcp" "lisp-dev-mcp")
+            (dict)))
+    
     (setf (href data "mcp" "lisp-dev-mcp" "url")
           url)
+    
     (write-config config data)
     (values)))
 
